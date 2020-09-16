@@ -1,0 +1,58 @@
+﻿<UserControl x:Class="HrTetris.Views.BoardView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:HrTetris.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="684" d:DesignWidth="700"
+             Loaded="BoardViewControl_Loaded">
+    <UserControl.Resources>
+
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Orientation="Horizontal">
+            <StackPanel x:Name="playField" Width="500" Height="684">
+                <Canvas Name="canvasPlayField" Loaded = "GenerateBoard" Width="500" Height="684" Margin="2,2,2,2"></Canvas>
+            </StackPanel>
+            <StackPanel Name="information">
+                <Button Name="btnStartGame" Click="btnStartGame_Click" Focusable="False">Start Game</Button>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Label Grid.Row="0" Grid.Column="0">Score</Label>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding Score}"></TextBlock>
+
+                    <Label Grid.Row="1" Grid.Column="0">Level</Label>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Level}"></TextBlock>
+
+                    <DataGrid Grid.Row="2" IsReadOnly="True" ItemsSource="{Binding TopScores, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+
+
+                    </DataGrid>
+                    <!--<ListView Grid.Row="2" ItemsSource="{Binding Path=TopScores, UpdateSourceTrigger=PropertyChanged}" Focusable="False">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="true" ColumnHeaderToolTip="Employee Information">
+                                <GridViewColumn Width="100" Header="Name" DisplayMemberBinding="{Binding Path=Name}"/>
+                                <GridViewColumn Width="100" Header="Lvl" DisplayMemberBinding="{Binding Path=Level}"/>
+                                <GridViewColumn Width="100" Header="Score" DisplayMemberBinding="{Binding Path=Points}"/>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>-->
+
+                    <Canvas Grid.Row="3" Name="canvasNextShape" Width="120" Height="120" Margin="2,2,2,2"></Canvas>
+                </Grid>
+
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</UserControl>

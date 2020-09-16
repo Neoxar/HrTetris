@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Tetris.Model
+namespace HrTetris.Model
 {
     public class Cell
     {

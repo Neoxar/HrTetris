@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Shapes;
 using System.Windows.Media;
 
-namespace Tetris.Helper
+namespace HrTetris.Helper
 {
     public class HelperMethods
     {

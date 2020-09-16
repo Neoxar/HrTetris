@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Tetris.Enums;
+using HrTetris.Enums;
 
-namespace Tetris.Model
+namespace HrTetris.Model
 {
     public class Shape
     {

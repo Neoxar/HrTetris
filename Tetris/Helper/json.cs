@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Tetris.Helper
+namespace HrTetris.Helper
 {
     /// <summary>
     /// Static class containing methods for Serialization of objects to JSON. (Object -> JSON),

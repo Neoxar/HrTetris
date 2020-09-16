@@ -12,9 +12,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Tetris.ViewModel;
+using HrTetris.ViewModel;
 
-namespace Tetris
+namespace HrTetris
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
