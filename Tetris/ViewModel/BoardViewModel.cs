@@ -37,6 +37,8 @@ namespace HrTetris.ViewModel
         {
             get
             {
+                if (_topScores == null)
+                    _topScores = new List<Score>();
                 return _topScores.OrderBy(ts => ts.Points).ToList();
             }
             set
@@ -77,23 +79,16 @@ namespace HrTetris.ViewModel
             }
         }
 
-        #region Constructors
-
-        public BoardViewModel()
+        public BoardViewModel(int width, int height)
         {
             Restart();
             Board = new List<Cell>();
             LoadHighScore();
             _random = new Random();
-        }
-        public BoardViewModel(int width, int height)
-           : this()
-        {
             _width = width;
             _height = height;
         }
 
-        #endregion Constructors
 
         public void SetRectangle(Rectangle cellRectangle)
         {

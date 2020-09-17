@@ -63,6 +63,9 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ViewModel\BoardViewModel.cs" />
     <Compile Include="ViewModel\EnterNameViewModel.cs" />
     <Compile Include="Views\BoardView.xaml.cs">
@@ -77,9 +80,6 @@
     <Compile Include="Enums\ShapeID.cs" />
     <Compile Include="Helper\HelperMethods.cs" />
     <Compile Include="Helper\json.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Model\Cell.cs" />
     <Compile Include="Model\Score.cs" />
     <Compile Include="Model\Shape.cs" />
@@ -110,8 +110,8 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BoardView.xaml">
       <SubType>Designer</SubType>
