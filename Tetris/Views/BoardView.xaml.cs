@@ -52,7 +52,7 @@ namespace HrTetris.Views
             this.DataContext = _bvm;
             _playFieldWidth = playField.Width - _canvasLineThickness / 2;
             _playFieldHeight = playField.Height - _canvasLineThickness / 2;
-            _playFieldLineWidth = _playFieldWidth / (_boardWidth + 2);
+            _playFieldLineWidth = _playFieldWidth / _boardWidth;
             _playFieldLineHeight = _playFieldHeight / _boardHeight;
             _cell.Width = _playFieldLineWidth - 2 * _canvasLineThickness;
             _cell.Height = _playFieldLineHeight - 2 * _canvasLineThickness;
@@ -238,7 +238,6 @@ namespace HrTetris.Views
         private void GenerateBoard()
         {
             _bvm.Board.Clear();
-            _bvm.GenerateBoardWalls();
             RedrawCells();
             RedrawNextShape();
         }

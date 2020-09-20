@@ -153,7 +153,7 @@ namespace HrTetris.ViewModel
             List<int> rowsToCollapse = new List<int>();
             for (int i = _height - 1; i > 0; i--)
             {
-                if (Board.Where(c => c.Y == i).Count() == _width + 2)
+                if (Board.Where(c => c.Y == i).Count() == _width)
                 {
                     rowsToCollapse.Add(i);
                 }
@@ -165,14 +165,14 @@ namespace HrTetris.ViewModel
             rowIndex.Sort();
             foreach (int i in rowIndex)
                 CollapseRow(i);
-            Score += _linePoints[rowIndex.Count - 1] * (_level);
+            Score += _linePoints[rowIndex.Count - 1] * _level;
         }
         private void CollapseRow(int index)
         {
-            List<Cell> toRemove = Board.Where(c => c.Y == index && c.X != 0 && c.X != _width + 1).ToList();
+            List<Cell> toRemove = Board.Where(c => c.Y == index).ToList();
             foreach (Cell c in toRemove)
                 Board.Remove(c);
-            List<Cell> toDrop = Board.Where(c => c.Y < index && c.X != 0 && c.X != _width + 1).ToList();
+            List<Cell> toDrop = Board.Where(c => c.Y < index).ToList();
             foreach (Cell c in toDrop)
                 c.Y += 1;
         }
@@ -336,16 +336,21 @@ namespace HrTetris.ViewModel
         private bool CanShapeBeAddedToBoard(Model.Shape shape, bool goingUp = false)
         {
             bool validShapePosition = true;
-            foreach (Cell c in shape.ShapeMembers)
+            if (shape.ShapeMembers.FirstOrDefault(s => s.X + shape.X < 0 || s.X + shape.X >= _width) != null)
             {
-                int x = c.X + shape.X;
-                int y = c.Y + shape.Y;
-                if (y >= _height || y < 0 || !goingUp && Board.FirstOrDefault(bc => bc.X == x && bc.Y == y) != null)
-                {
-                    validShapePosition = false;
-                    break;
-                }
+                validShapePosition = false;
             }
+            if (validShapePosition)
+                foreach (Cell c in shape.ShapeMembers)
+                {
+                    int x = c.X + shape.X;
+                    int y = c.Y + shape.Y;
+                    if (y >= _height || y < 0 || !goingUp && Board.FirstOrDefault(bc => bc.X == x && bc.Y == y) != null)
+                    {
+                        validShapePosition = false;
+                        break;
+                    }
+                }
             return validShapePosition;
         }
 

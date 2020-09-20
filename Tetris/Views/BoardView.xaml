@@ -5,15 +5,15 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:HrTetris.Views"
              mc:Ignorable="d" 
-             d:DesignHeight="684" d:DesignWidth="700"
+             d:DesignHeight="650" d:DesignWidth="400"
              Loaded="BoardViewControl_Loaded">
-    
+
     <Grid>
         <StackPanel Orientation="Horizontal">
-            <StackPanel x:Name="playField" Width="500" Height="684">
-                <Canvas Name="canvasPlayField" Loaded = "GenerateBoard" Width="500" Height="684" Margin="2,2,2,2"></Canvas>
+            <StackPanel x:Name="playField" Width="300" Height="600" Margin="2,2,2,2">
+                <Canvas Name="canvasPlayField" Loaded = "GenerateBoard" Width="500" Height="597" Margin="2,2,2,2"></Canvas>
             </StackPanel>
-            <StackPanel Name="information">
+            <StackPanel Name="information" Margin="2,2,2,2">
                 <Button Name="btnStartGame" Click="btnStartGame_Click" Focusable="False">Start Game</Button>
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -33,9 +33,11 @@
                     <Label Grid.Row="1" Grid.Column="0">Level</Label>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding Level}"></TextBlock>
 
-                    <DataGrid Grid.Row="2" IsReadOnly="True" ItemsSource="{Binding TopScores, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}"/>
+                    <Canvas Grid.Row="2" Grid.ColumnSpan="2"  Name="canvasNextShape" Width="120" Height="120" Margin="2,2,2,2"></Canvas>
 
-                    <Canvas Grid.Row="3" Name="canvasNextShape" Width="120" Height="120" Margin="2,2,2,2"></Canvas>
+                    <DataGrid Grid.Row="3" Grid.ColumnSpan="2" IsReadOnly="True"
+                              ItemsSource="{Binding TopScores, Mode=TwoWay, NotifyOnSourceUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                    </DataGrid>
                 </Grid>
 
             </StackPanel>
