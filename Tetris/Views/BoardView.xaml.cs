@@ -38,7 +38,7 @@ namespace HrTetris.Views
         private int _boardHeight = 20;
 
         private Rectangle _cell = new Rectangle();
-        private Model.Shape _moviengShape;
+        private Model.Shape _movingShape;
         private Model.Shape _nextShape;
 
         public BoardView()
@@ -144,9 +144,9 @@ namespace HrTetris.Views
 
         private void TryMove(KeyDirection keyDirection)
         {
-            if (_moviengShape != null)
+            if (_movingShape != null)
             {
-                _moviengShape = _bvm.MoveShapeOnBoard(_moviengShape, keyDirection, out _collided);
+                _movingShape = _bvm.MoveShapeOnBoard(_movingShape, keyDirection, out _collided);
                 RedrawCells();
             }
         }
@@ -189,6 +189,16 @@ namespace HrTetris.Views
             }
         }
 
+        private void RestartTimer()
+        {
+            if (_timer != null)
+            {
+                _timer.Stop();
+                _lastTimerMove = DateTime.Now;
+                _timer.Start();
+            }
+        }
+
         private void CheckShapeColisionAfterMove()
         {
             if (_collided)
@@ -226,10 +236,13 @@ namespace HrTetris.Views
         {
             if (_nextShape == null)
                 _nextShape = _bvm.GenerateRandomShape();
-            _moviengShape = _nextShape;
-            _nextShape = _bvm.GenerateRandomShape();
-            if (_bvm.AddShapeToBoard(_moviengShape))
+            _movingShape = _nextShape;
+            if (_bvm.AddShapeToBoard(_movingShape))
                 StopGame();
+            else
+                _bvm.AddGhostShapeToBoard(_movingShape);
+
+            _nextShape = _bvm.GenerateRandomShape();
 
             RedrawCells();
             RedrawNextShape();
@@ -278,7 +291,8 @@ namespace HrTetris.Views
                         break;
                     case Key.Down:
                         TryMove(KeyDirection.Down);
-                        _lastTimerMove = DateTime.Now.AddSeconds(-5);
+                        CheckShapeColisionAfterMove();
+                        RestartTimer();
                         break;
                     case Key.Space:
                         TryMove(KeyDirection.Drop);

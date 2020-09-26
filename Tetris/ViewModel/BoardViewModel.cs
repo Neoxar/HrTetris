@@ -25,6 +25,8 @@ namespace HrTetris.ViewModel
         private int _height;
         private int _collapsedLines;
 
+        private Model.Shape _ghostMovingShape;
+
         private List<int> _linePoints = new List<int> { 40, 100, 300, 1200 };
 
         private readonly Random _random;
@@ -114,6 +116,8 @@ namespace HrTetris.ViewModel
             return leveledUp;
         }
 
+        #region High Score
+
         public bool NewHighScore()
         {
             bool newHighScore = false;
@@ -145,6 +149,8 @@ namespace HrTetris.ViewModel
             Settings.Default.TopScores = JSON.SerializeToJsonString<List<Score>>(_topScores);
             Settings.Default.Save();
         }
+
+        #endregion High Score
 
         #region Row Collapse
 
@@ -180,15 +186,6 @@ namespace HrTetris.ViewModel
         #endregion Row Collapse
 
         #region Shape Generation
-
-        public void GenerateBoardWalls()
-        {
-            for (int i = 0; i < _height; i++)
-            {
-                Board.Add(new Cell(HelperMethods.CloneRectangle(_cellRectangle, new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Gray)), 0, i));
-                Board.Add(new Cell(HelperMethods.CloneRectangle(_cellRectangle, new SolidColorBrush(Colors.Black), new SolidColorBrush(Colors.Gray)), _width + 1, i));
-            }
-        }
 
         public void GenerateShapes()
         {
@@ -234,9 +231,29 @@ namespace HrTetris.ViewModel
         {
             List<Model.Shape> tempShapes = _shapes.FindAll(s => s.Index == 0);
             Model.Shape tmp = tempShapes[_random.Next(0, tempShapes.Count)].Clone();
-            tmp.X = (_width - 1) / 2;
+            tmp.X = (_width / 2) - 2;
             tmp.Y -= CalculateMaxVerticalMove(tmp, -1);
             return tmp;
+        }
+
+        public void GenerateGhostShape(Model.Shape originalShape)
+        {
+            _ghostMovingShape = originalShape.Clone(true);
+            _ghostMovingShape.Y += CalculateMaxVerticalMove(_ghostMovingShape, 1, originalShape);
+            RemoveGhostCellCollisionWithMoving(originalShape);
+        }
+        public void RemoveGhostCellCollisionWithMoving(Model.Shape originalShape)
+        {
+            List<Cell> cellToRemove = new List<Cell>();
+            foreach (Cell c in originalShape.ShapeMembers)
+            {
+                Cell toRemove = _ghostMovingShape.ShapeMembers.FirstOrDefault(gs => (gs.X + _ghostMovingShape.X) == (c.X + originalShape.X)
+                && (gs.Y + _ghostMovingShape.Y) == (c.Y + originalShape.Y));
+                if (toRemove != null) cellToRemove.Add(toRemove);
+            }
+            foreach (Cell c in cellToRemove)
+                _ghostMovingShape.ShapeMembers.Remove(c);
+
         }
 
         #endregion Shape Generation
@@ -265,6 +282,13 @@ namespace HrTetris.ViewModel
             }
             return collision;
         }
+        public void AddGhostShapeToBoard(Model.Shape shape)
+        {
+            if (_ghostMovingShape != null)
+                RemoveShapeFromBoard(_ghostMovingShape);
+            GenerateGhostShape(shape);
+            AddShapeToBoard(_ghostMovingShape);
+        }
 
         private void RemoveShapeFromBoard(Model.Shape shape)
         {
@@ -283,8 +307,12 @@ namespace HrTetris.ViewModel
 
         public Model.Shape MoveShapeOnBoard(Model.Shape shape, KeyDirection direction, out bool collided)
         {
+            if (_ghostMovingShape != null)
+                RemoveShapeFromBoard(_ghostMovingShape);
             Model.Shape newShape = TryMoveShape(shape, direction, out collided);
+            GenerateGhostShape(newShape);
             AddShapeToBoard(newShape);
+            AddShapeToBoard(_ghostMovingShape);
             return newShape;
         }
 
@@ -333,7 +361,7 @@ namespace HrTetris.ViewModel
 
         #endregion Shape Manipulation
 
-        private bool CanShapeBeAddedToBoard(Model.Shape shape, bool goingUp = false)
+        private bool CanShapeBeAddedToBoard(Model.Shape shape, Model.Shape ignoreShape = null, bool goingUp = false)
         {
             bool validShapePosition = true;
             if (shape.ShapeMembers.FirstOrDefault(s => s.X + shape.X < 0 || s.X + shape.X >= _width) != null)
@@ -341,6 +369,9 @@ namespace HrTetris.ViewModel
                 validShapePosition = false;
             }
             if (validShapePosition)
+            {
+                if (ignoreShape != null)
+                    RemoveShapeFromBoard(ignoreShape);
                 foreach (Cell c in shape.ShapeMembers)
                 {
                     int x = c.X + shape.X;
@@ -351,14 +382,17 @@ namespace HrTetris.ViewModel
                         break;
                     }
                 }
+                if (ignoreShape != null)
+                    AddShapeToBoard(ignoreShape);
+            }
             return validShapePosition;
         }
 
-        private int CalculateMaxVerticalMove(Model.Shape shape, int direction)
+        private int CalculateMaxVerticalMove(Model.Shape shape, int direction, Model.Shape ignoreShape = null)
         {
             int maxMove = 0;
             Model.Shape shapeMoved = shape.Clone();
-            while (CanShapeBeAddedToBoard(shapeMoved, direction == -1))
+            while (CanShapeBeAddedToBoard(shapeMoved, ignoreShape, direction == -1))
             {
                 maxMove++;
                 shapeMoved = shape.Clone();

@@ -23,9 +23,17 @@ namespace HrTetris.Model
             Y = y;
         }
 
-        public Cell Clone()
+        public Cell Clone(bool shouldFill = false)
         {
-            return new Cell(Helper.HelperMethods.CloneRectangle(Rectangle, (SolidColorBrush)Rectangle.Stroke, (SolidColorBrush)Rectangle.Fill), X, Y);
+            SolidColorBrush stroke = (SolidColorBrush)Rectangle.Stroke;
+            SolidColorBrush fill = (SolidColorBrush)Rectangle.Fill;
+            if (shouldFill)
+            {
+                stroke = new SolidColorBrush(fill.Color);
+                fill = new SolidColorBrush(Colors.Gray);
+            }
+
+            return new Cell(Helper.HelperMethods.CloneRectangle(Rectangle, stroke, fill), X, Y);
         }
     }
 }

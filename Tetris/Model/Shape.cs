@@ -21,7 +21,7 @@ namespace HrTetris.Model
             Index = index;
         }
 
-        public Shape Clone()
+        public Shape Clone(bool shouldFill = false)
         {
             Shape shape = new Shape();
             shape.X = X;
@@ -30,7 +30,7 @@ namespace HrTetris.Model
             shape.Index = Index;
             foreach (Cell c in ShapeMembers)
             {
-                shape.ShapeMembers.Add(c.Clone());
+                shape.ShapeMembers.Add(c.Clone(shouldFill));
             }
             return shape;
         }
